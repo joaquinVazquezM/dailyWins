@@ -107,6 +107,19 @@ class Estadisticas:
         
         return len(self.logros) / dias_activos if dias_activos > 0 else 0.0
     
+
+    def logros_por_dia(self):
+        """
+        Agrupa logros por fecha.
+        
+        Returns:
+            dict: {fecha: cantidad}
+        """
+        from collections import Counter
+        fechas = [logro.fecha for logro in self.logros]
+        return dict(Counter(fechas))
+    
+   
     def generar_reporte(self):
         """
         Genera un reporte completo en texto.
