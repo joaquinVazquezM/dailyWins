@@ -1,0 +1,26 @@
+[
+  {
+    "descripcion": "Estudié Python 1 hora",
+    "categoria": "aprendizaje",
+    "fecha": "2026-02-03",
+    "hora": "21:31"
+  },
+  {
+    "descripcion": "Hice 20 flexiones",
+    "categoria": "salud",
+    "fecha": "2026-02-03",
+    "hora": "21:31"
+  },
+  {
+    "descripcion": "Terminé reporte mensual",
+    "categoria": "trabajo",
+    "fecha": "2026-02-03",
+    "hora": "21:31"
+  },
+  {
+    "descripcion": "Hacer ejercicio",
+    "categoria": "salud",
+    "fecha": "2026-02-03",
+    "hora": "21:52"
+  }
+]

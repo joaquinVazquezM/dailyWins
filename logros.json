@@ -16,5 +16,23 @@
     "categoria": "trabajo",
     "fecha": "2026-01-23",
     "hora": "19:37"
+  },
+  {
+    "descripcion": "Estudié Python 1 hora",
+    "categoria": "aprendizaje",
+    "fecha": "2026-02-03",
+    "hora": "21:28"
+  },
+  {
+    "descripcion": "Hice 20 flexiones",
+    "categoria": "salud",
+    "fecha": "2026-02-03",
+    "hora": "21:28"
+  },
+  {
+    "descripcion": "Terminé reporte mensual",
+    "categoria": "trabajo",
+    "fecha": "2026-02-03",
+    "hora": "21:28"
   }
 ]
