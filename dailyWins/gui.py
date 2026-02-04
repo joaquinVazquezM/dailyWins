@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
 from gestor_logros import GestorLogros
 from estadisticas import Estadisticas
+from visualizador import Visualizador
 from datetime import datetime
 
 class DailyWinsGUI:
@@ -18,12 +19,17 @@ class DailyWinsGUI:
         # Crear ventana principal
         self.root = tk.Tk()
         self.root.title("🎯 DailyWins - Registro de Logros")
-        self.root.geometry("800x600")
+        self.root.geometry("850x650")
         self.root.configure(bg="#f0f0f0")
         
         # Crear interfaz
         self.crear_widgets()
         self.actualizar_dashboard()
+    
+    def limpiar_pantalla(self):
+        """Limpia la pantalla de la consola."""
+        import os
+        os.system('cls' if os.name == 'nt' else 'clear')
     
     def crear_widgets(self):
         """Crea todos los widgets de la interfaz."""
@@ -107,6 +113,9 @@ class DailyWinsGUI:
         )
         self.entry_descripcion.pack(pady=5)
         
+        # Bind para registrar con Enter
+        self.entry_descripcion.bind('<Return>', lambda e: self.registrar_logro())
+        
         tk.Label(
             tab_registro,
             text="Categoría:",
@@ -168,18 +177,101 @@ class DailyWinsGUI:
             font=("Courier", 10),
             wrap=tk.WORD,
             width=80,
-            height=20
+            height=15
         )
         self.text_stats.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
         
+        # Frame para botones
+        btn_frame = tk.Frame(tab_stats, bg="#ecf0f1")
+        btn_frame.pack(pady=10)
+        
         tk.Button(
-            tab_stats,
+            btn_frame,
             text="📈 Generar Reporte",
-            font=("Arial", 12),
+            font=("Arial", 11),
             bg="#9b59b6",
             fg="white",
+            padx=15,
+            pady=8,
             command=self.ver_estadisticas
+        ).pack(side=tk.LEFT, padx=5)
+        
+        # PESTAÑA 4: GRÁFICOS ⭐ NUEVA
+        tab_graficos = tk.Frame(notebook, bg="#ecf0f1")
+        notebook.add(tab_graficos, text="📊 Gráficos")
+        
+        # Título
+        tk.Label(
+            tab_graficos,
+            text="Visualización de Datos",
+            font=("Arial", 16, "bold"),
+            bg="#ecf0f1"
+        ).pack(pady=20)
+        
+        # Frame para botones de gráficos
+        graficos_frame = tk.Frame(tab_graficos, bg="#ecf0f1")
+        graficos_frame.pack(pady=20)
+        
+        # Botón: Dashboard Completo
+        tk.Button(
+            graficos_frame,
+            text="📊 Dashboard Completo",
+            font=("Arial", 13, "bold"),
+            bg="#2c3e50",
+            fg="white",
+            padx=25,
+            pady=15,
+            command=self.mostrar_dashboard_completo,
+            width=25
         ).pack(pady=10)
+        
+        # Botón: Gráfico de Categorías
+        tk.Button(
+            graficos_frame,
+            text="📈 Distribución por Categoría",
+            font=("Arial", 13, "bold"),
+            bg="#3498db",
+            fg="white",
+            padx=25,
+            pady=15,
+            command=self.mostrar_grafico_categorias,
+            width=25
+        ).pack(pady=10)
+        
+        # Botón: Tendencia Temporal
+        tk.Button(
+            graficos_frame,
+            text="📉 Tendencia Temporal",
+            font=("Arial", 13, "bold"),
+            bg="#e74c3c",
+            fg="white",
+            padx=25,
+            pady=15,
+            command=self.mostrar_grafico_tendencia,
+            width=25
+        ).pack(pady=10)
+        
+        # Botón: Calendario de Actividad
+        tk.Button(
+            graficos_frame,
+            text="🗓️ Calendario de Actividad",
+            font=("Arial", 13, "bold"),
+            bg="#27ae60",
+            fg="white",
+            padx=25,
+            pady=15,
+            command=self.mostrar_grafico_calendario,
+            width=25
+        ).pack(pady=10)
+        
+        # Nota informativa
+        tk.Label(
+            tab_graficos,
+            text="💡 Tip: Registra logros durante varios días para ver gráficos más completos",
+            font=("Arial", 10, "italic"),
+            bg="#ecf0f1",
+            fg="#7f8c8d"
+        ).pack(side=tk.BOTTOM, pady=20)
     
     def actualizar_dashboard(self):
         """Actualiza las estadísticas del dashboard superior."""
@@ -224,6 +316,9 @@ class DailyWinsGUI:
             mensaje += f"\n\n🔥 ¡Excelente! ¡{racha} días consecutivos!"
         
         messagebox.showinfo("Éxito", mensaje)
+        
+        # Enfocar de nuevo en el campo de entrada
+        self.entry_descripcion.focus()
     
     def ver_historial(self):
         """Muestra el historial de logros."""
@@ -250,6 +345,62 @@ class DailyWinsGUI:
         reporte = stats.generar_reporte()
         
         self.text_stats.insert(1.0, reporte)
+    
+    def mostrar_dashboard_completo(self):
+        """Muestra el dashboard completo con todos los gráficos."""
+        stats = Estadisticas(self.gestor.obtener_todos())
+        
+        if self.gestor.contar_total() == 0:
+            messagebox.showinfo(
+                "Sin datos",
+                "📭 Registra algunos logros primero para ver los gráficos"
+            )
+            return
+        
+        viz = Visualizador(stats)
+        viz.dashboard_completo()
+    
+    def mostrar_grafico_categorias(self):
+        """Muestra el gráfico de distribución por categorías."""
+        stats = Estadisticas(self.gestor.obtener_todos())
+        
+        if self.gestor.contar_total() == 0:
+            messagebox.showinfo(
+                "Sin datos",
+                "📭 Registra algunos logros primero para ver los gráficos"
+            )
+            return
+        
+        viz = Visualizador(stats)
+        viz.grafico_categorias()
+    
+    def mostrar_grafico_tendencia(self):
+        """Muestra el gráfico de tendencia temporal."""
+        stats = Estadisticas(self.gestor.obtener_todos())
+        
+        if self.gestor.contar_total() == 0:
+            messagebox.showinfo(
+                "Sin datos",
+                "📭 Registra algunos logros primero para ver los gráficos"
+            )
+            return
+        
+        viz = Visualizador(stats)
+        viz.grafico_tendencia()
+    
+    def mostrar_grafico_calendario(self):
+        """Muestra el calendario de actividad."""
+        stats = Estadisticas(self.gestor.obtener_todos())
+        
+        if self.gestor.contar_total() == 0:
+            messagebox.showinfo(
+                "Sin datos",
+                "📭 Registra algunos logros primero para ver los gráficos"
+            )
+            return
+        
+        viz = Visualizador(stats)
+        viz.grafico_calendario()
     
     def ejecutar(self):
         """Inicia el bucle principal de la GUI."""
