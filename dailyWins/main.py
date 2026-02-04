@@ -1,4 +1,5 @@
 from gestor_logros import GestorLogros
+from estadisticas import Estadisticas
 import os
 
 class DailyWinsApp:
@@ -18,14 +19,19 @@ class DailyWinsApp:
     
     def mostrar_menu(self):
         """Muestra el menú principal."""
+        # Calcular racha actual para mostrar en el menú
+        stats = Estadisticas(self.gestor.obtener_todos())
+        racha = stats.calcular_racha()
+        
         print("\n" + "="*40)
         print("        🎯 DAILYWINS 🎯")
         print("="*40)
         print(f"📊 Total de logros: {self.gestor.contar_total()}")
+        print(f"🔥 Racha actual: {racha} día(s)")
         print("="*40)
         print("1. ✅ Registrar logro")
         print("2. 📋 Ver últimos logros")
-        print("3. 📈 Ver estadísticas")
+        print("3. 📈 Ver reporte completo")
         print("4. 🚪 Salir")
         print("="*40)
     
@@ -61,6 +67,15 @@ class DailyWinsApp:
         logro = self.gestor.agregar_logro(descripcion, categoria)
         print(f"\n✅ ¡Logro registrado exitosamente!")
         print(f"   {logro}")
+        
+        # Mostrar motivación según racha
+        stats = Estadisticas(self.gestor.obtener_todos())
+        racha = stats.calcular_racha()
+        if racha >= 7:
+            print(f"\n🔥🔥🔥 ¡INCREÍBLE! ¡{racha} días de racha!")
+        elif racha >= 3:
+            print(f"\n🔥 ¡Excelente! ¡{racha} días consecutivos!")
+        
         input("\nPresiona ENTER para continuar...")
     
     def ver_logros(self):
@@ -78,30 +93,13 @@ class DailyWinsApp:
         input("\nPresiona ENTER para continuar...")
     
     def mostrar_estadisticas(self):
-        """Muestra estadísticas de los logros."""
-        print("\n--- ESTADÍSTICAS ---")
+        """Muestra el reporte completo de estadísticas."""
+        # Crear objeto estadísticas con todos los logros
+        stats = Estadisticas(self.gestor.obtener_todos())
         
-        total = self.gestor.contar_total()
-        print(f"📊 Total de logros: {total}")
-        
-        if total > 0:
-            # Contar logros por categoría
-            todos = self.gestor.obtener_todos()
-            conteo_categorias = {}
-            
-            for logro in todos:
-                if logro.categoria in conteo_categorias:
-                    conteo_categorias[logro.categoria] += 1
-                else:
-                    conteo_categorias[logro.categoria] = 1
-            
-            print("\n📈 Logros por categoría:")
-            for categoria, cantidad in conteo_categorias.items():
-                porcentaje = (cantidad / total) * 100
-                barra = "█" * int(porcentaje / 5)
-                print(f"  {categoria.capitalize():12} {cantidad:3} ({porcentaje:.1f}%) {barra}")
-        else:
-            print("\n💡 Registra tu primer logro para ver estadísticas")
+        # Generar y mostrar reporte
+        reporte = stats.generar_reporte()
+        print(reporte)
         
         input("\nPresiona ENTER para continuar...")
     
@@ -120,7 +118,17 @@ class DailyWinsApp:
             elif opcion == "3":
                 self.mostrar_estadisticas()
             elif opcion == "4":
-                print("\n👋 ¡Sigue acumulando victorias! Hasta pronto.")
+                # Mostrar mensaje de despedida con estadísticas finales
+                stats = Estadisticas(self.gestor.obtener_todos())
+                total = self.gestor.contar_total()
+                racha = stats.calcular_racha()
+                
+                print(f"\n{'='*40}")
+                print(f"   📊 Sesión finalizada")
+                print(f"   Total acumulado: {total} logros")
+                print(f"   Racha actual: {racha} día(s)")
+                print(f"{'='*40}")
+                print("👋 ¡Sigue acumulando victorias! Hasta pronto.")
                 break
             else:
                 print("❌ Opción inválida")
