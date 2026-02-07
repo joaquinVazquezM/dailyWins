@@ -22,5 +22,17 @@
     "categoria": "salud",
     "fecha": "2026-02-03",
     "hora": "21:52"
+  },
+  {
+    "descripcion": "Estudie 2 horas",
+    "categoria": "aprendizaje",
+    "fecha": "2026-02-03",
+    "hora": "22:45"
+  },
+  {
+    "descripcion": "Levante 20 kilos en el gym",
+    "categoria": "salud",
+    "fecha": "2026-02-07",
+    "hora": "09:54"
   }
 ]
